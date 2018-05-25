@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
 import { Tab } from '@icedesign/base';
 import axios from 'axios';
+import {post} from './../../../../api/axios'
 import CustomTable from './components/CustomTable';
 import EditDialog from './components/EditDialog';
 import DeleteBalloon from './components/DeleteBalloon';
@@ -21,14 +22,14 @@ export default class TabTable extends Component {
     super(props);
     this.state = {
       dataSource: {},
-      tabKey: 'all',
+      tabKey: 'rows',
     };
     this.columns = [
       {
         title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        width: 50,
+        dataIndex: '_id',
+        key: '_id',
+        width: 150,
       },
       {
         title: '用户名',
@@ -36,40 +37,40 @@ export default class TabTable extends Component {
         key: 'username',
         width: 100,
       },
+      // {
+      //   title: '邮箱',
+      //   dataIndex: 'email',
+      //   key: 'email',
+      //   width: 150,
+      // },
       {
-        title: '邮箱',
-        dataIndex: 'email',
-        key: 'email',
-        width: 150,
-      },
-      {
-        title: '用户组',
-        dataIndex: 'group',
-        key: 'group',
+        title: '权限',
+        dataIndex: 'roles',
+        key: 'roles',
         width: 120,
       },
-      {
-        title: '文章数',
-        dataIndex: 'articleNum',
-        key: 'articleNum',
-        width: 80,
-      },
-      {
-        title: '评论数',
-        dataIndex: 'commentNum',
-        key: 'commentNum',
-        width: 80,
-      },
+      // {
+      //   title: '文章数',
+      //   dataIndex: 'articleNum',
+      //   key: 'articleNum',
+      //   width: 80,
+      // },
+      // {
+      //   title: '评论数',
+      //   dataIndex: 'commentNum',
+      //   key: 'commentNum',
+      //   width: 80,
+      // },
       {
         title: '注册时间',
-        dataIndex: 'regTime',
-        key: 'regTime',
+        dataIndex: 'createTime',
+        key: 'createTime',
         width: 150,
       },
       {
         title: '最后登录时间',
-        dataIndex: 'LastLoginTime',
-        key: 'LastLoginTime',
+        dataIndex: 'lastLoginTime',
+        key: 'lastLoginTime',
         width: 150,
       },
       {
@@ -95,16 +96,26 @@ export default class TabTable extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get('/mock/user-list.json')
-      .then((response) => {
-        this.setState({
-          dataSource: response.data.data,
-        });
+    post('/user/list')
+    .then(data => {
+      console.log(data.data.rows)
+      this.setState({
+        dataSource: data.data
       })
-      .catch((error) => {
-        console.log(error);
-      });
+    })
+    .catch(error => {
+      console.log(error)
+    })
+    // axios
+    //   .get('/mock/user-list.json')
+    //   .then((response) => {
+    //     this.setState({
+    //       dataSource: response.data.data,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   }
 
   getFormValues = (dataIndex, values) => {

@@ -1,8 +1,9 @@
 import axios from 'axios'
 import qs from 'qs'
+import {getStore} from './../store'
 
 axios.defaults.baseURL = 'http://120.79.224.26:3000';
-
+axios.defaults.headers.authRoles = getStore('userInfo') ? getStore('userInfo').roles : "" 
 export function get(url, params) {
   return new Promise((resolve, reject) => {
     axios.get(url, {
@@ -18,10 +19,8 @@ export function get(url, params) {
 export function post(url, data) {
   return new Promise((resolve, reject) => {
     axios.post(url, qs.stringify(data), {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        }
-      }
+
+    }
     ).then(res => {
       resolve(res.data)
     }).catch(err => {

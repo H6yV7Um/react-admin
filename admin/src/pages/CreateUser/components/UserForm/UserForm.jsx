@@ -1,16 +1,20 @@
 /* eslint react/no-string-refs:0 */
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
-import { Input, Grid, Button, Select, Feedback } from '@icedesign/base';
+import { Input, Grid, Button, Select, Feedback,Upload,Dialog } from '@icedesign/base';
 import {
   FormBinderWrapper as IceFormBinderWrapper,
   FormBinder as IceFormBinder,
   FormError as IceFormError,
 } from '@icedesign/form-binder';
 import './UserForm.scss';
+import UploadImage from './components/uploadImage'
+import Radio from './components/radio'
 
 const { Row, Col } = Grid;
 const Toast = Feedback.toast;
+
+const { CropUpload } = Upload;
 export default class UserForm extends Component {
   static displayName = 'UserForm';
 
@@ -23,12 +27,13 @@ export default class UserForm extends Component {
     this.state = {
       value: {
         username: '',
-        displayName: '',
-        email: '',
-        userGroup: null,
-        userState: null,
-        passwd: '',
-        rePasswd: '',
+        nickName: '',
+        roles: 'tourist',
+        password: '',
+        avatar:"",
+        sex:"1",
+        introduction:"",  // 用户描述
+        isPassword: ''
       },
     };
   }
@@ -46,8 +51,7 @@ export default class UserForm extends Component {
   };
 
   checkPasswd2 = (rule, values, callback, stateValues) => {
-    console.log('stateValues:', stateValues);
-    if (values && values !== stateValues.passwd) {
+    if (values && values !== stateValues.password) {
       callback('两次输入密码不一致');
     } else {
       callback();
@@ -101,19 +105,34 @@ export default class UserForm extends Component {
                   昵称：
                 </Col>
                 <Col xxs="16" s="12" l="10">
-                  <IceFormBinder name="displayName">
+                  <IceFormBinder name="nickName">
                     <Input size="large" placeholder="请输入昵称" />
                   </IceFormBinder>
-                  <IceFormError name="displayName" />
+                  <IceFormError name="nickName" />
                 </Col>
               </Row>
-
               <Row style={styles.formItem}>
                 <Col xxs="6" s="4" l="3" style={styles.formLabel}>
-                  邮箱：
+                  性别：
                 </Col>
                 <Col xxs="16" s="12" l="10">
-                  <IceFormBinder
+                  <IceFormBinder name="sex">
+                    <Select
+                      size="large"
+                      placeholder="请选择..."
+                      >
+                      <Select.Option value="1">男</Select.Option>
+                      <Select.Option value="0">女</Select.Option>
+                    </Select>
+                  </IceFormBinder>
+                </Col>
+              </Row>
+              <Row style={styles.formItem}>
+                <Col xxs="6" s="4" l="3" style={styles.formLabel}>
+                  头像：
+                </Col>
+                <Col xxs="16" s="12" l="10">
+                  {/* <IceFormBinder
                     type="email"
                     name="email"
                     required
@@ -124,43 +143,26 @@ export default class UserForm extends Component {
                       placeholder="ice-admin@alibaba-inc.com"
                     />
                   </IceFormBinder>
-                  <IceFormError name="email" />
-                </Col>
-              </Row>
-
-              <Row style={styles.formItem}>
-                <Col xxs="6" s="4" l="3" style={styles.formLabel}>
-                  用户组：
-                </Col>
-                <Col xxs="16" s="12" l="10">
-                  <IceFormBinder name="userGroup">
-                    <Select
-                      size="large"
-                      placeholder="请选择..."
-                      dataSource={[
-                        { label: '管理员', value: 'administrator' },
-                        { label: '投稿者', value: 'contributor' },
-                      ]}
-                    />
+                  <IceFormError name="email" /> */}
+                  <IceFormBinder name="avatar">
+                    <UploadImage></UploadImage>
                   </IceFormBinder>
                 </Col>
               </Row>
 
               <Row style={styles.formItem}>
                 <Col xxs="6" s="4" l="3" style={styles.formLabel}>
-                  状态：
+                  用户权限：
                 </Col>
                 <Col xxs="16" s="12" l="10">
-                  <IceFormBinder name="userState">
+                  <IceFormBinder name="roles">
                     <Select
                       size="large"
                       placeholder="请选择..."
-                      dataSource={[
-                        { label: '有效', value: 'valid' },
-                        { label: '禁用', value: 'disabled' },
-                        { label: '过期', value: 'invalid' },
-                      ]}
-                    />
+                      >
+                      <Select.Option value="admin">管理员</Select.Option>
+                      <Select.Option value="tourist">普通用户</Select.Option>
+                    </Select>
                   </IceFormBinder>
                 </Col>
               </Row>
@@ -171,7 +173,7 @@ export default class UserForm extends Component {
                 </Col>
                 <Col xxs="16" s="12" l="10">
                   <IceFormBinder
-                    name="passwd"
+                    name="password"
                     required
                     validator={this.checkPasswd}
                   >
@@ -181,7 +183,7 @@ export default class UserForm extends Component {
                       placeholder="请重新输入新密码"
                     />
                   </IceFormBinder>
-                  <IceFormError name="passwd" />
+                  <IceFormError name="password" />
                 </Col>
               </Row>
 
@@ -191,7 +193,7 @@ export default class UserForm extends Component {
                 </Col>
                 <Col xxs="16" s="12" l="10">
                   <IceFormBinder
-                    name="rePasswd"
+                    name="isPassword"
                     required
                     validator={(rule, values, callback) =>
                       this.checkPasswd2(
@@ -208,7 +210,7 @@ export default class UserForm extends Component {
                       placeholder="两次输入密码保持一致"
                     />
                   </IceFormBinder>
-                  <IceFormError name="rePasswd" />
+                  <IceFormError name="isPassword" />
                 </Col>
               </Row>
             </div>

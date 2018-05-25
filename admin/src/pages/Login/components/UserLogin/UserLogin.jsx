@@ -17,6 +17,7 @@ const { Row, Col } = Grid;
 
 const Toast = Feedback.toast;
 const showSuccess = name => Toast.success(`登录成功~,欢迎您,${name}`);
+const showError = msg => Toast.error(msg);
 
 // 寻找背景图片可以从 https://unsplash.com/ 寻找
 const backgroundImage =
@@ -58,10 +59,15 @@ export default class UserLogin extends Component {
       }
       fetchUserMsg(values,msg=>{
         let {user} = msg.data
+        console.log(values)
         if(msg.status === 200){
           showSuccess(user.username)
+          // if(values.checkbox){
           setStore('userInfo',user)
+          // }
           this.props.history.push('/');                  
+        }else{
+          showError(msg.msg)
         }
         console.log(msg)
         return false
